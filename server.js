@@ -8,9 +8,13 @@ let storedNumbers = [];
 
 app.use(express.json());
 
-const fetchNumbers = async () => {
+const fetchNumbers = async (accessToken) => {
     try {
-        const response = await axios.get("http://test-server-api/numbers");
+        const response = await axios.get("http://20.244.56.144/test/numbers", {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
         return response.data;
     } catch (error) {
         console.error("Error fetching numbers:", error);
@@ -64,7 +68,8 @@ const updateStoredNumbers = (newNumbers) => {
 
 app.get('/numbers/:numberId', async (req, res) => {
     const { numberId } = req.params;
-    const numbers = await fetchNumbers();
+    const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiZXhwIjoxNzExNzk3ODgyLCJpYXQiOjE3MTE3OTc1ODIsImlzcyI6IkFmZm9yZG1lZCIsImp0aSI6IjgxNDRjMmJjLTQ0OGQtNDQ3MC04NDIxLTgzZTViODk3ZTYzYiIsInN1YiI6InNoaXZhbS4yM01DQTEwMTczQHZpdGJob3BhbC5hYy5pbiJ9LCJjb21wYW55TmFtZSI6ImdvTWFydCIsImNsaWVudElEIjoiODE0NGMyYmMtNDQ4ZC00NDcwLTg0MjEtODNlNWI4OTdlNjNiIiwiY2xpZW50U2VjcmV0IjoiY1V3UWNOZkZGYVdvdHNWUCIsIm93bmVyTmFtZSI6IlNoaXZhbSIsIm93bmVyRW1haWwiOiJzaGl2YW0uMjNNQ0ExMDE3M0B2aXRiaG9wYWwuYWMuaW4iLCJyb2xsTm8iOiIyM01DQTEwMTczIn0.XTkwT7Oowswu7TSibYYheEabubEY5eUtg_PzmV1xRo0"; // Replace with your access token
+    const numbers = await fetchNumbers(accessToken);
     const filteredNumbers = filterNumbers(numbers, numberId);
     updateStoredNumbers(filteredNumbers);
 
